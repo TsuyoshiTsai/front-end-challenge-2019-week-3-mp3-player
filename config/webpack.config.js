@@ -26,8 +26,6 @@ const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const ForkTsCheckerWebpackPlugin = require('react-dev-utils/ForkTsCheckerWebpackPlugin');
 const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
 
-const postcssNormalize = require('postcss-normalize');
-
 // Source maps are resource heavy and can cause out of memory issue for large source files.
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
 // Some apps do not need the benefits of saving a web request, so not inlining the chunk
@@ -89,19 +87,18 @@ module.exports = function(webpackEnv) {
           // Necessary for external CSS imports to work
           // https://github.com/facebook/create-react-app/issues/2677
           ident: 'postcss',
-          plugins: () => [
-            require('postcss-flexbugs-fixes'),
-            require('postcss-preset-env')({
-              autoprefixer: {
-                flexbox: 'no-2009',
-              },
-              stage: 3,
-            }),
+          // plugins: () => [
+            // require('postcss-preset-env')({
+            //   autoprefixer: {
+            //     flexbox: 'no-2009',
+            //   },
+            //   stage: 3,
+            // }),
             // Adds PostCSS Normalize as the reset css with default options,
             // so that it honors browserslist config in package.json
             // which in turn let's users customize the target behavior as per their needs.
-            postcssNormalize(),
-          ],
+            // postcssNormalize(),
+          // ],
           sourceMap: isEnvProduction && shouldUseSourceMap,
         },
       },
@@ -168,10 +165,7 @@ module.exports = function(webpackEnv) {
       publicPath: publicPath,
       // Point sourcemap entries to original disk location (format as URL on Windows)
       devtoolModuleFilenameTemplate: isEnvProduction
-        ? info =>
-            path
-              .relative(paths.appSrc, info.absoluteResourcePath)
-              .replace(/\\/g, '/')
+        ? (info => path.relative(paths.appSrc, info.absoluteResourcePath).replace(/\\/g, '/'))
         : isEnvDevelopment &&
           (info => path.resolve(info.absoluteResourcePath).replace(/\\/g, '/')),
     },
@@ -353,7 +347,8 @@ module.exports = function(webpackEnv) {
                       },
                     },
                   ],
-                ],
+                  isEnvDevelopment ? 'react-hot-loader/babel' : undefined,
+                ].filter(Boolean),
                 // This is a feature of `babel-loader` for webpack (not Babel itself).
                 // It enables caching results in ./node_modules/.cache/babel-loader/
                 // directory for faster rebuilds.
@@ -431,7 +426,17 @@ module.exports = function(webpackEnv) {
                   sourceMap: isEnvProduction && shouldUseSourceMap,
                 },
                 'sass-loader'
-              ),
+              ).concat([
+                {
+                  loader: require.resolve('sass-resources-loader'),
+                  options: {
+                    resources: [
+                      path.resolve('./src/styles/_variables.scss'),
+                      path.resolve('./src/styles/mixins/**/*.scss'),
+                    ],
+                  },
+                }
+              ]),
               // Don't consider CSS imports dead code even if the
               // containing package claims to have no side effects.
               // Remove this when webpack adds a warning or an error for this.
@@ -450,7 +455,17 @@ module.exports = function(webpackEnv) {
                   getLocalIdent: getCSSModuleLocalIdent,
                 },
                 'sass-loader'
-              ),
+              ).concat([
+                {
+                  loader: require.resolve('sass-resources-loader'),
+                  options: {
+                    resources: [
+                      path.resolve('./src/styles/_variables.scss'),
+                      path.resolve('./src/styles/mixins/**/*.scss'),
+                    ],
+                  },
+                }
+              ]),
             },
             // "file" loader makes sure those assets get served by WebpackDevServer.
             // When you `import` an asset, you get its (virtual) filename.
