@@ -1,0 +1,12 @@
+$padding: 0 16px;
+$width: 100%;
+$height: 90px;
+$background-color: $gray-white;
+
+.layout-footer {
+  flex: 0 0 auto;
+  padding: $padding;
+  width: $width;
+  height: $height;
+  background-color: $background-color;
+}
