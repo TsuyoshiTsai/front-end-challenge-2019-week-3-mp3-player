@@ -130,26 +130,32 @@ function App () {
         <Layout.Footer>
           <Player>
             <Player.Controls>
-              <Player.Controls.Button title='啟用隨機播放'>
-                <Icon name='random' mode='01' />
-              </Player.Controls.Button>
+              <Player.Controls.ButtonGroup>
+                <Player.Controls.Button title='啟用隨機播放'>
+                  <Icon name='random' mode='01' />
+                </Player.Controls.Button>
 
-              <Player.Controls.Button title='切換上一首'>
-                <Icon name='step-backward' mode='01' />
-              </Player.Controls.Button>
+                <Player.Controls.Button title='切換上一首'>
+                  <Icon name='step-backward' mode='01' />
+                </Player.Controls.Button>
 
-              <Player.Controls.Button isCircled title={isPlaying ? '暫停' : '播放'} onClick={handlePlaying}>
-                <Icon name={isPlaying ? 'pause' : 'play'} mode='01' size={14} style={{ marginLeft: isPlaying ? 2 : 4 }} />
-              </Player.Controls.Button>
+                <Player.Controls.Button isCircled title={isPlaying ? '暫停' : '播放'} onClick={handlePlaying}>
+                  <Icon name={isPlaying ? 'pause' : 'play'} mode='01' size={14} style={{ marginLeft: isPlaying ? 2 : 4 }} />
+                </Player.Controls.Button>
 
-              <Player.Controls.Button title='切換下一首'>
-                <Icon name='step-forward' mode='01' />
-              </Player.Controls.Button>
+                <Player.Controls.Button title='切換下一首'>
+                  <Icon name='step-forward' mode='01' />
+                </Player.Controls.Button>
 
-              <Player.Controls.Button title='啟用單首重複播放'>
-                <Icon name='repeat' mode='01' />
-              </Player.Controls.Button>
+                <Player.Controls.Button title='啟用單首重複播放'>
+                  <Icon name='repeat' mode='01' />
+                </Player.Controls.Button>
+              </Player.Controls.ButtonGroup>
+
+              <Player.Controls.PlaybackBar />
             </Player.Controls>
+
+            <Player.ExtraControls>aa</Player.ExtraControls>
           </Player>
         </Layout.Footer>
       </Layout>

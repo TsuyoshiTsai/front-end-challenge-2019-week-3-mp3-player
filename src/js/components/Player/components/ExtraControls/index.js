@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames/bind'
 
 // Components
-import Controls from './components/Controls'
-import ExtraControls from './components/ExtraControls'
+
+// Lib MISC
 
 // Style
 import styles from './style.module.scss'
@@ -16,15 +16,12 @@ export const propTypes = {
   className: PropTypes.string,
 }
 
-function Player (props) {
+function ExtraControls (props) {
   const { className, ...restProps } = props
 
-  return <div className={cx('player', className)} {...restProps} />
+  return <div className={cx('player-extra-controls', className)} {...restProps} />
 }
 
-Player.propTypes = propTypes
+ExtraControls.propTypes = propTypes
 
-Player.Controls = Controls
-Player.ExtraControls = ExtraControls
-
-export default Player
+export default ExtraControls

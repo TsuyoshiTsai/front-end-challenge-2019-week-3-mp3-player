@@ -1,5 +1,8 @@
 .player-controls {
+  margin-left: auto;
   display: flex;
-  justify-content: space-between;
-  width: 220px;
+  width: 40%;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }

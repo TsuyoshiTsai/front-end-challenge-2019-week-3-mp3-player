@@ -9,19 +9,18 @@ import styles from './style.module.scss'
 const cx = classnames.bind(styles)
 
 export const propTypes = {
-  isCircled: PropTypes.bool,
   className: PropTypes.string,
 }
 
 export const defaultProps = {}
 
-function Button (props) {
-  const { isCircled, className, ...restProps } = props
+function Background (props) {
+  const { className, ...restProps } = props
 
-  return <button className={cx('player-controls-button', className)} data-is-circled={isCircled} {...restProps} />
+  return <div className={cx('progress-bar-background', className)} {...restProps} />
 }
 
-Button.propTypes = propTypes
-Button.defaultProps = defaultProps
+Background.propTypes = propTypes
+Background.defaultProps = defaultProps
 
-export default Button
+export default Background

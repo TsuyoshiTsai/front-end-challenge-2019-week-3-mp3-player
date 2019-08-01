@@ -1,0 +1,11 @@
+.progress-bar-slider {
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  background-color: $gray-white;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px 0 rgba($gray-black, 0.25);
+  transition: left 100ms $transition-mode;
+  @include size(12px);
+}

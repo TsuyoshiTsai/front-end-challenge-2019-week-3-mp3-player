@@ -4,6 +4,8 @@ import classnames from 'classnames/bind'
 
 // Components
 import Button from './components/Button'
+import ButtonGroup from './components/ButtonGroup'
+import PlaybackBar from './components/PlaybackBar'
 
 // Lib MISC
 
@@ -26,5 +28,7 @@ function Controls (props) {
 Controls.propTypes = propTypes
 
 Controls.Button = Button
+Controls.ButtonGroup = ButtonGroup
+Controls.PlaybackBar = PlaybackBar
 
 export default Controls
