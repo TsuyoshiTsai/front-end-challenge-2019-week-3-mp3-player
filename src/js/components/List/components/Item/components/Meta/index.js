@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames/bind'
 
 // Components
-import Typography from '../../../../../Typography'
+import Typography from '@components/Typography'
 
 // Style
 import styles from './style.module.scss'

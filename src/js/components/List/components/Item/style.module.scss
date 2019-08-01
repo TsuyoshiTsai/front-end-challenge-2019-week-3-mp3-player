@@ -1,9 +1,16 @@
 .list-item {
-  &:not(:last-of-type)[data-with-border="true"] {
-    box-shadow: inset 0 -1px 0 0 $gray-light;
+  transition: box-shadow 100ms $transition-mode;
+
+  &[data-with-border="true"] {
+    border-bottom: 1px solid $gray-lighter;
   }
 
   &[data-is-selectable="true"] {
     cursor: pointer;
+  }
+
+  &:hover {
+    z-index: 1;
+    box-shadow: 0 0 7px 0px $gray-lighter;
   }
 }
