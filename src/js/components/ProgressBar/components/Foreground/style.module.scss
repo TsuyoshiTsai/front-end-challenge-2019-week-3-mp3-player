@@ -1,13 +1,13 @@
 .progress-bar-foreground {
   border-radius: inherit;
-  background-color: $gray-dark;
-  transition-property: transform, background-color;
+  background: $gray-dark;
+  transition-property: transform, background;
   transition-duration: 100ms;
   transition-timing-function: $transition-mode;
-  will-change: transform, background-color;
+  will-change: transform, background;
   @include size(inherit);
 
   &[data-is-active="true"] {
-    background-color: $color-primary;
+    background: linear-gradient(90deg, $color-primary-light, $color-primary);
   }
 }

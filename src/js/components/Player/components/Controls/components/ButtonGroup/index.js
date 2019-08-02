@@ -17,7 +17,7 @@ export const defaultProps = {}
 function ButtonGroup (props) {
   const { className, ...restProps } = props
 
-  return <button className={cx('player-controls-button-group', className)} {...restProps} />
+  return <div className={cx('player-controls-button-group', className)} {...restProps} />
 }
 
 ButtonGroup.propTypes = propTypes

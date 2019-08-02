@@ -58,38 +58,50 @@ function App () {
   const audioRef = useRef(null)
   const [audio] = useState(playItem)
   const [isPlaying, setIsPlaying] = useState(false)
+  const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
-  console.log('=== duration :', duration)
+
+  const percentage = duration === 0 ? 0 : (currentTime / duration) * 100
+  const activatePlaying = () => {
+    audioRef.current.play()
+    setIsPlaying(true)
+  }
+  const unactivatePlaying = () => {
+    audioRef.current.pause()
+    setIsPlaying(false)
+  }
 
   useEffect(() => {
     audioRef.current = new Audio(audio.audioPath)
-    // audio.current.play()
-    console.log('audioRef.current.currentTime :', audioRef)
-    console.log('audioRef.current.currentTime :', audioRef.current.duration)
 
-    const onCanPlay = event => {
-      console.log('event :', event)
-      console.log('audioRef.current.duration :', audioRef.current.duration)
-      console.log('audioRef.current.currentTime :', audioRef.current.currentTime)
+    const onCanPlay = event => setDuration(audioRef.current.duration)
 
-      setDuration(audioRef.current.duration)
+    const onTimeUpdate = event => {
+      setCurrentTime(audioRef.current.currentTime)
     }
 
     audioRef.current.addEventListener('canplay', onCanPlay)
+    audioRef.current.addEventListener('timeupdate', onTimeUpdate)
 
     return () => {
       audioRef.current.removeEventListener('canplay', onCanPlay)
+      audioRef.current.removeEventListener('timeupdate', onTimeUpdate)
     }
   }, [audio])
 
   const handlePlaying = event => {
     if (isPlaying) {
-      audioRef.current.pause()
-      setIsPlaying(false)
+      unactivatePlaying()
     } else {
-      audioRef.current.play()
-      setIsPlaying(true)
+      activatePlaying()
     }
+  }
+
+  const handlePercentageChange = (event, newPercentage) => {
+    if (isPlaying || !audioRef.current.paused) {
+      unactivatePlaying()
+    }
+    audioRef.current.currentTime = (newPercentage / 100) * duration
   }
 
   return (
@@ -152,7 +164,14 @@ function App () {
                 </Player.Controls.Button>
               </Player.Controls.ButtonGroup>
 
-              <Player.Controls.PlaybackBar />
+              <Player.Controls.PlaybackBar
+                progressBarProps={{
+                  percentage,
+                  onSliderChange: handlePercentageChange,
+                  onSliderChangeStart: unactivatePlaying,
+                  onSliderChangeEnd: activatePlaying,
+                }}
+              />
             </Player.Controls>
 
             <Player.ExtraControls>aa</Player.ExtraControls>

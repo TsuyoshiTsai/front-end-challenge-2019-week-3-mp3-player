@@ -7,7 +7,7 @@
   @include size(40px);
 
   &:hover {
-    color: $gray-darkest;
+    color: $color-primary;
   }
 
   &[data-is-circled="true"] {

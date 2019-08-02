@@ -70,6 +70,7 @@
     "react-spring": "^8.0.15",
     "redux-devtools-extension": "^2.13.8",
     "resolve": "1.10.0",
+    "rxjs": "^6.5.2",
     "sass-loader": "7.1.0",
     "sass-resources-loader": "^2.0.0",
     "semver": "6.0.0",

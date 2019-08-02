@@ -12,7 +12,6 @@ import styles from './style.module.scss'
 const cx = classnames.bind(styles)
 
 export const propTypes = {
-  isActive: PropTypes.bool,
   style: PropTypes.object,
   className: PropTypes.string,
 }
@@ -20,7 +19,7 @@ export const propTypes = {
 export const defaultProps = {}
 
 function Foreground (props) {
-  const { isActive, style, className, ...restProps } = props
+  const { style, className, ...restProps } = props
 
   const context = useContext(ProgressBarContext)
 
@@ -28,7 +27,7 @@ function Foreground (props) {
     <div
       className={cx('progress-bar-foreground', className)}
       style={{ ...style, transform: `translateX(-${100 - context.percentage}%)` }}
-      data-is-active={isActive}
+      data-is-active={context.isActive}
       {...restProps}
     />
   )
