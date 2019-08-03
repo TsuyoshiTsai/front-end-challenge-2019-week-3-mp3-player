@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useCallback, useState, useEffect, useRef } from 'react'
 import { hot } from 'react-hot-loader'
+import shuffle from 'lodash/shuffle'
 
 // Components
-// import Button from '@components/Button'
 import Icon from '@components/Icon'
 import Layout from '@components/Layout'
 import List from '@components/List'
@@ -71,32 +71,99 @@ const audios = [
     duration: 99.604898,
   },
 ]
+const getNewAudio = (type, playlist, index, isRepeat) => {
+  let audio = null
+
+  if (type === 'prev') {
+    audio = index === 0 && isRepeat ? playlist[playlist.length - 1] : playlist[index - 1]
+  } else if (type === 'next') {
+    audio = index === playlist.length - 1 && isRepeat ? playlist[0] : playlist[index + 1]
+  }
+
+  return audio
+}
 
 function App () {
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [currentAudio, setCurrentAudio] = useState(audios[0])
+  const [isRandom, setIsRandom] = useState(false)
+  const [isRepeatList, setIsRepeatList] = useState(false)
+  const [isRepeatItem, setIsRepeatItem] = useState(false)
+  const [playlist, setPlaylist] = useState(audios)
+  const [currentAudio, setCurrentAudio] = useState(playlist[0])
   const [currentTime, setCurrentTime] = useState(0)
 
-  const currentAudioIndex = audios.findIndex(audio => audio.id === currentAudio.id)
   const audioRef = useRef(null)
-  const percentage = (currentTime / currentAudio.duration) * 100
 
-  const activatePlaying = () => setIsPlaying(true)
-  const unactivatePlaying = () => setIsPlaying(false)
+  const currentAudioIndex = playlist.findIndex(audio => audio.id === currentAudio.id)
+  const percentage = (currentTime / currentAudio.duration) * 100
+  const isPlaying = audioRef.current !== null && !audioRef.current.paused
+
+  const handlePlaying = event => {
+    if (isPlaying) {
+      audioRef.current.pause()
+    } else {
+      audioRef.current.play()
+    }
+  }
+  const handleSelect = (event, audio) => {
+    setCurrentAudio(audio)
+    audioRef.current.play()
+  }
+  // 手動按上一首按鈕 / 手動按下一首按鈕 / ended
+  const handleNavigate = useCallback(
+    type => {
+      const newAudio = getNewAudio(type, playlist, currentAudioIndex, isRepeatList)
+
+      // 單首循環
+      if (isRepeatItem) {
+        audioRef.current.currentTime = 0
+        audioRef.current.play()
+      } else if (typeof newAudio !== 'undefined') {
+        // 列表循環找得到 newAudio，無循環則找不到
+        setCurrentAudio(newAudio)
+      }
+    },
+    [isRepeatItem, isRepeatList, playlist, currentAudioIndex]
+  )
+  const handleRandom = event => {
+    if (isRandom) {
+      setIsRandom(false)
+      setPlaylist(audios)
+    } else {
+      setIsRandom(true)
+      setPlaylist(shuffle(audios))
+    }
+  }
+  const handleRepeat = event => {
+    if (!isRepeatItem && !isRepeatList) {
+      setIsRepeatList(true)
+    } else if (isRepeatList) {
+      setIsRepeatList(false)
+      setIsRepeatItem(true)
+    } else if (isRepeatItem) {
+      setIsRepeatItem(false)
+    }
+  }
+  const handlePercentageChange = (event, percentage) => {
+    audioRef.current.currentTime = (percentage / 100) * currentAudio.duration
+  }
 
   // 切換 audio 的時候
   useEffect(() => {
+    let lastIsPlaying = false
+
     if (audioRef.current !== null) {
+      lastIsPlaying = !audioRef.current.paused
       audioRef.current.pause()
       setCurrentTime(0)
-      activatePlaying()
     }
 
     audioRef.current = new Audio(currentAudio.audioPath)
 
-    const onTimeUpdate = event => {
-      setCurrentTime(audioRef.current.currentTime)
+    if (lastIsPlaying) {
+      audioRef.current.play()
     }
+
+    const onTimeUpdate = event => setCurrentTime(audioRef.current.currentTime)
 
     audioRef.current.addEventListener('timeupdate', onTimeUpdate)
 
@@ -105,53 +172,12 @@ function App () {
     }
   }, [currentAudio])
 
-  // 改變播放狀態的時候
+  // 播完的時候
   useEffect(() => {
-    if (audioRef.current === null) return
+    if (audioRef.current === null || !audioRef.current.ended) return
 
-    if (isPlaying) {
-      audioRef.current.play()
-    } else {
-      audioRef.current.pause()
-    }
-  }, [currentAudio, isPlaying])
-
-  const handlePlaying = event => {
-    if (isPlaying) {
-      unactivatePlaying()
-    } else {
-      activatePlaying()
-    }
-  }
-  const handleSelect = (event, audio) => {
-    setCurrentAudio(audio)
-    handlePlaying()
-  }
-  const handlePrev = event => {
-    if (currentAudioIndex === 0) {
-      const [lastAudio] = audios.slice(-1)
-
-      setCurrentAudio(lastAudio)
-    } else {
-      const [prevAudio] = audios.slice(currentAudioIndex - 1)
-
-      setCurrentAudio(prevAudio)
-    }
-  }
-  const handleNext = event => {
-    if (currentAudioIndex === audios.length - 1) {
-      const [firstAudio] = audios
-
-      setCurrentAudio(firstAudio)
-    } else {
-      const [nextAudio] = audios.slice(currentAudioIndex + 1)
-
-      setCurrentAudio(nextAudio)
-    }
-  }
-  const handlePercentageChange = (event, newPercentage) => {
-    audioRef.current.currentTime = (newPercentage / 100) * currentAudio.duration
-  }
+    handleNavigate('next')
+  }, [currentTime, handleNavigate])
 
   return (
     <Layout height='100vh'>
@@ -159,7 +185,7 @@ function App () {
         <Layout>
           <Layout.Header isFlexbox>
             <Typography.Title level='h1' align='center' marginTop='20px' marginBottom='20px'>
-              Play List
+              Playlist
             </Typography.Title>
           </Layout.Header>
 
@@ -199,24 +225,36 @@ function App () {
           <Player>
             <Player.Controls>
               <Player.Controls.ButtonGroup>
-                <Player.Controls.Button title='啟用隨機播放'>
-                  <Icon name='random' mode='01' />
+                <Player.Controls.Button title={`${isRandom ? '停用' : '啟用'}隨機播放`} onClick={handleRandom} isActive={isRandom}>
+                  <Icon name='random' mode='01' size={18} />
                 </Player.Controls.Button>
 
-                <Player.Controls.Button title='切換上一首' onClick={handlePrev}>
-                  <Icon name='step-backward' mode='01' />
+                <Player.Controls.Button
+                  title='切換上一首'
+                  onClick={event => handleNavigate('prev')}
+                  disabled={!(isRepeatItem || isRepeatList) && currentAudioIndex === 0}
+                >
+                  <Icon name='step-backward' mode='01' size={18} />
                 </Player.Controls.Button>
 
                 <Player.Controls.Button isCircled title={isPlaying ? '暫停' : '播放'} onClick={handlePlaying}>
                   <Icon name={isPlaying ? 'pause' : 'play'} mode='01' size={14} style={{ marginLeft: isPlaying ? 2 : 4 }} />
                 </Player.Controls.Button>
 
-                <Player.Controls.Button title='切換下一首' onClick={handleNext}>
-                  <Icon name='step-forward' mode='01' />
+                <Player.Controls.Button
+                  title='切換下一首'
+                  onClick={event => handleNavigate('next')}
+                  disabled={!(isRepeatItem || isRepeatList) && currentAudioIndex === playlist.length - 1}
+                >
+                  <Icon name='step-forward' mode='01' size={18} />
                 </Player.Controls.Button>
 
-                <Player.Controls.Button title='啟用單首重複播放'>
-                  <Icon name='repeat' mode='01' />
+                <Player.Controls.Button
+                  title={`${isRepeatItem ? '停用' : '啟用'}${isRepeatList ? '單首' : ''}重複播放`}
+                  onClick={handleRepeat}
+                  isActive={isRepeatItem || isRepeatList}
+                >
+                  <Icon name='repeat' mode={isRepeatItem ? '02' : '01'} size={18} />
                 </Player.Controls.Button>
               </Player.Controls.ButtonGroup>
 

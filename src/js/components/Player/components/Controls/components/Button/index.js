@@ -9,6 +9,7 @@ import styles from './style.module.scss'
 const cx = classnames.bind(styles)
 
 export const propTypes = {
+  isActive: PropTypes.bool,
   isCircled: PropTypes.bool,
   className: PropTypes.string,
 }
@@ -16,9 +17,9 @@ export const propTypes = {
 export const defaultProps = {}
 
 function Button (props) {
-  const { isCircled, className, ...restProps } = props
+  const { isActive, isCircled, className, ...restProps } = props
 
-  return <button className={cx('player-controls-button', className)} data-is-circled={isCircled} {...restProps} />
+  return <button className={cx('player-controls-button', className)} data-is-circled={isCircled} data-is-active={isActive} {...restProps} />
 }
 
 Button.propTypes = propTypes

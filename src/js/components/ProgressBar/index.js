@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames/bind'
 import { fromEvent } from 'rxjs'
-import { tap, switchMap, takeUntil } from 'rxjs/operators'
+import { throttleTime, tap, switchMap, takeUntil } from 'rxjs/operators'
 
 // Components
 import Background from './components/Background'
@@ -63,7 +63,7 @@ function ProgressBar (props) {
         }
       })
     )
-    const bodyMouseMove$ = fromEvent(document.body, 'mousemove')
+    const bodyMouseMove$ = fromEvent(document.body, 'mousemove').pipe(throttleTime(50))
 
     // 按下 progress bar 時，移動 slider 的位置
     progressBarMouseDown$.subscribe(event => handleSliderChange(event))

@@ -1,13 +1,18 @@
 .player-controls-button {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   color: $gray-dark;
   transition: all 100ms $transition-mode;
-  @include size(40px);
+  @include size(36px);
 
-  &:hover {
+  &:not(:disabled):hover {
     color: $color-primary;
+  }
+
+  &:disabled {
+    color: $gray-lighter;
   }
 
   &[data-is-circled="true"] {
@@ -16,6 +21,22 @@
 
     &:hover {
       transform: scale(1.06);
+    }
+  }
+
+  &[data-is-active="true"] {
+    color: $color-primary;
+
+    &:after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      display: block;
+      border-radius: 50%;
+      background-color: currentColor;
+      transform: translateX(-50%);
+      @include size(5px);
     }
   }
 }
