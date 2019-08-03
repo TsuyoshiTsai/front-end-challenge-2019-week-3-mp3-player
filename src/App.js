@@ -9,85 +9,112 @@ import List from '@components/List'
 import Player from '@components/Player'
 import Track from '@components/Track'
 import Typography from '@components/Typography'
-// import ForWeAreManyMP3 from './assets/audios/For_We_Are_Many.mp3'
 
-const playItem = {
-  title: 'For We Are Many',
-  audioPath: require('./assets/audios/For_We_Are_Many.mp3'),
-  imagePath: 'https://images.unsplash.com/photo-1517230878791-4d28214057c2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1280&q=80',
-}
-// const playList = [
-//   {
-//     title: '',
-//     audioPath: require('./assets/audios/For_We_Are_Many.mp3'),
-//     imagePath: 'https://images.unsplash.com/photo-1517230878791-4d28214057c2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1280&q=80',
-//   },
-//   {
-//     title: '',
-//     audioPath: require('./assets/audios/Metamorphosis.mp3'),
-//     imagePath: 'https://images.unsplash.com/photo-1436831135709-48bdc150cce5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1280&q=80',
-//   },
-//   {
-//     title: '',
-//     audioPath: require('./assets/audios/Slowly_Until_We_Get_There.mp3'),
-//     imagePath: 'https://images.unsplash.com/photo-1529518969858-8baa65152fc8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1280&q=80',
-//   },
-//   {
-//     title: '',
-//     audioPath: require('./assets/audios/Spirit_of_the_Dead.mp3'),
-//     imagePath: 'https://images.unsplash.com/photo-1540019838667-d61df4d4d92d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1280&q=80',
-//   },
-//   {
-//     title: '',
-//     audioPath: require('./assets/audios/That_Never_Dies.mp3'),
-//     imagePath: 'https://images.unsplash.com/photo-1504622956513-06165f390646?ixlib=rb-1.2.1&auto=format&fit=crop&w=1280&q=80',
-//   },
-//   {
-//     title: '',
-//     audioPath: require('./assets/audios/The_Long_Night.mp3'),
-//     imagePath: 'https://images.unsplash.com/photo-1474752651386-dc296d69dc90?ixlib=rb-1.2.1&auto=format&fit=crop&w=1280&q=80',
-//   },
-//   {
-//     title: '',
-//     audioPath: require('./assets/audios/Wishful_Thinking.mp3'),
-//     imagePath: 'https://images.unsplash.com/photo-1460036521480-ff49c08c2781?ixlib=rb-1.2.1&auto=format&fit=crop&w=1280&q=80',
-//   },
-// ]
+// Variables / Functions
+const formatTime = totalSeconds =>
+  `${String(Math.floor(totalSeconds / 60)).padStart(2, '0')}:${String(Math.floor(totalSeconds % 60)).padStart(2, '0')}`
+const audios = [
+  {
+    id: 0,
+    title: 'For We Are Many',
+    description: 'for we are many',
+    audioPath: require('./assets/audios/For_We_Are_Many.mp3'),
+    imagePath: 'https://images.unsplash.com/photo-1517230878791-4d28214057c2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&q=80',
+    duration: 172.826122,
+  },
+  {
+    id: 1,
+    title: 'Metamorphosis',
+    description: 'metamorphosis',
+    audioPath: require('./assets/audios/Metamorphosis.mp3'),
+    imagePath: 'https://images.unsplash.com/photo-1436831135709-48bdc150cce5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&q=80',
+    duration: 170.788571,
+  },
+  {
+    id: 2,
+    title: 'Slowly Until We Get There',
+    description: 'slowly until we get there',
+    audioPath: require('./assets/audios/Slowly_Until_We_Get_There.mp3'),
+    imagePath: 'https://images.unsplash.com/photo-1529518969858-8baa65152fc8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&q=80',
+    duration: 97.149388,
+  },
+  {
+    id: 3,
+    title: 'Spirit of the Dead',
+    description: 'spirit of the dead',
+    audioPath: require('./assets/audios/Spirit_of_the_Dead.mp3'),
+    imagePath: 'https://images.unsplash.com/photo-1540019838667-d61df4d4d92d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&q=80',
+    duration: 169.456327,
+  },
+  {
+    id: 4,
+    title: 'That Never Dies',
+    description: 'that never dies',
+    audioPath: require('./assets/audios/That_Never_Dies.mp3'),
+    imagePath: 'https://images.unsplash.com/photo-1504622956513-06165f390646?ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&q=80',
+    duration: 172.146939,
+  },
+  {
+    id: 5,
+    title: 'The Long Night',
+    description: 'the long night',
+    audioPath: require('./assets/audios/The_Long_Night.mp3'),
+    imagePath: 'https://images.unsplash.com/photo-1474752651386-dc296d69dc90?ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&q=80',
+    duration: 169.404082,
+  },
+  {
+    id: 6,
+    title: 'Wishful Thinking',
+    description: 'wishful thinking',
+    audioPath: require('./assets/audios/Wishful_Thinking.mp3'),
+    imagePath: 'https://images.unsplash.com/photo-1460036521480-ff49c08c2781?ixlib=rb-1.2.1&auto=format&fit=crop&w=1024&q=80',
+    duration: 99.604898,
+  },
+]
 
 function App () {
-  const audioRef = useRef(null)
-  const [audio] = useState(playItem)
   const [isPlaying, setIsPlaying] = useState(false)
+  const [currentAudio, setCurrentAudio] = useState(audios[0])
   const [currentTime, setCurrentTime] = useState(0)
-  const [duration, setDuration] = useState(0)
 
-  const percentage = duration === 0 ? 0 : (currentTime / duration) * 100
-  const activatePlaying = () => {
-    audioRef.current.play()
-    setIsPlaying(true)
-  }
-  const unactivatePlaying = () => {
-    audioRef.current.pause()
-    setIsPlaying(false)
-  }
+  const currentAudioIndex = audios.findIndex(audio => audio.id === currentAudio.id)
+  const audioRef = useRef(null)
+  const percentage = (currentTime / currentAudio.duration) * 100
 
+  const activatePlaying = () => setIsPlaying(true)
+  const unactivatePlaying = () => setIsPlaying(false)
+
+  // 切換 audio 的時候
   useEffect(() => {
-    audioRef.current = new Audio(audio.audioPath)
+    if (audioRef.current !== null) {
+      audioRef.current.pause()
+      setCurrentTime(0)
+      activatePlaying()
+    }
 
-    const onCanPlay = event => setDuration(audioRef.current.duration)
+    audioRef.current = new Audio(currentAudio.audioPath)
 
     const onTimeUpdate = event => {
       setCurrentTime(audioRef.current.currentTime)
     }
 
-    audioRef.current.addEventListener('canplay', onCanPlay)
     audioRef.current.addEventListener('timeupdate', onTimeUpdate)
 
     return () => {
-      audioRef.current.removeEventListener('canplay', onCanPlay)
       audioRef.current.removeEventListener('timeupdate', onTimeUpdate)
     }
-  }, [audio])
+  }, [currentAudio])
+
+  // 改變播放狀態的時候
+  useEffect(() => {
+    if (audioRef.current === null) return
+
+    if (isPlaying) {
+      audioRef.current.play()
+    } else {
+      audioRef.current.pause()
+    }
+  }, [currentAudio, isPlaying])
 
   const handlePlaying = event => {
     if (isPlaying) {
@@ -96,12 +123,34 @@ function App () {
       activatePlaying()
     }
   }
+  const handleSelect = (event, audio) => {
+    setCurrentAudio(audio)
+    handlePlaying()
+  }
+  const handlePrev = event => {
+    if (currentAudioIndex === 0) {
+      const [lastAudio] = audios.slice(-1)
 
-  const handlePercentageChange = (event, newPercentage) => {
-    if (isPlaying || !audioRef.current.paused) {
-      unactivatePlaying()
+      setCurrentAudio(lastAudio)
+    } else {
+      const [prevAudio] = audios.slice(currentAudioIndex - 1)
+
+      setCurrentAudio(prevAudio)
     }
-    audioRef.current.currentTime = (newPercentage / 100) * duration
+  }
+  const handleNext = event => {
+    if (currentAudioIndex === audios.length - 1) {
+      const [firstAudio] = audios
+
+      setCurrentAudio(firstAudio)
+    } else {
+      const [nextAudio] = audios.slice(currentAudioIndex + 1)
+
+      setCurrentAudio(nextAudio)
+    }
+  }
+  const handlePercentageChange = (event, newPercentage) => {
+    audioRef.current.currentTime = (newPercentage / 100) * currentAudio.duration
   }
 
   return (
@@ -116,17 +165,24 @@ function App () {
 
           <Layout.Content>
             <List>
-              <List.Item prefix={<Icon name='play' mode='01' size={12} />} suffix='01:11' padding='10px 24px' withBorder isSelectable>
-                <List.Item.Meta title='Bed and Breakfast' description='The 126ers' />
-              </List.Item>
-
-              <List.Item prefix={<Icon name='play' mode='01' size={12} />} suffix='01:11' padding='10px 24px' withBorder isSelectable>
-                <List.Item.Meta title='Bed and Breakfast' description='The 126ers' />
-              </List.Item>
-
-              <List.Item prefix={<Icon name='play' mode='01' size={12} />} suffix='01:11' padding='10px 24px' withBorder isSelectable>
-                <List.Item.Meta title='Bed and Breakfast' description='The 126ers' />
-              </List.Item>
+              {audios.map((audio, index) => (
+                <List.Item
+                  key={index}
+                  prefix={<Icon name={currentAudio.id === audio.id && isPlaying ? 'pause' : 'play'} mode='01' size={10} />}
+                  suffix={formatTime(audio.duration)}
+                  padding='10px 24px'
+                  color={currentAudio.id === audio.id ? 'primary' : null}
+                  withBorder
+                  isSelectable
+                  onClick={event => handleSelect(event, audio)}
+                >
+                  <List.Item.Meta
+                    title={audio.title}
+                    description={audio.description}
+                    descriptionProps={{ color: currentAudio.id === audio.id ? 'primary' : 'gray' }}
+                  />
+                </List.Item>
+              ))}
             </List>
           </Layout.Content>
         </Layout>
@@ -134,8 +190,8 @@ function App () {
 
       <Layout>
         <Layout.Content>
-          <Track imageUrl='https://images.unsplash.com/photo-1474752651386-dc296d69dc90?ixlib=rb-1.2.1&auto=format&fit=crop&w=1280&q=80'>
-            <Track.Meta title='Bed and Breakfast' description='The 126ers' />
+          <Track imageUrl={currentAudio.imagePath}>
+            <Track.Meta title={currentAudio.title} description={currentAudio.description} />
           </Track>
         </Layout.Content>
 
@@ -147,7 +203,7 @@ function App () {
                   <Icon name='random' mode='01' />
                 </Player.Controls.Button>
 
-                <Player.Controls.Button title='切換上一首'>
+                <Player.Controls.Button title='切換上一首' onClick={handlePrev}>
                   <Icon name='step-backward' mode='01' />
                 </Player.Controls.Button>
 
@@ -155,7 +211,7 @@ function App () {
                   <Icon name={isPlaying ? 'pause' : 'play'} mode='01' size={14} style={{ marginLeft: isPlaying ? 2 : 4 }} />
                 </Player.Controls.Button>
 
-                <Player.Controls.Button title='切換下一首'>
+                <Player.Controls.Button title='切換下一首' onClick={handleNext}>
                   <Icon name='step-forward' mode='01' />
                 </Player.Controls.Button>
 
@@ -165,12 +221,9 @@ function App () {
               </Player.Controls.ButtonGroup>
 
               <Player.Controls.PlaybackBar
-                progressBarProps={{
-                  percentage,
-                  onSliderChange: handlePercentageChange,
-                  onSliderChangeStart: unactivatePlaying,
-                  onSliderChangeEnd: activatePlaying,
-                }}
+                progressBarProps={{ percentage, onSliderChange: handlePercentageChange }}
+                currentTime={formatTime(currentTime)}
+                duration={formatTime(currentAudio.duration)}
               />
             </Player.Controls>
 

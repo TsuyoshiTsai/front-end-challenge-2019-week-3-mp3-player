@@ -12,6 +12,8 @@ import styles from './style.module.scss'
 const cx = classnames.bind(styles)
 
 export const propTypes = {
+  currentTime: PropTypes.string,
+  duration: PropTypes.string,
   progressBarProps: PropTypes.shape(ProgressBarPropTypes),
   className: PropTypes.string,
 }
@@ -19,11 +21,13 @@ export const propTypes = {
 export const defaultProps = {}
 
 function PlaybackBar (props) {
-  const { progressBarProps = {}, className, ...restProps } = props
+  const { currentTime, duration, progressBarProps = {}, className, ...restProps } = props
 
   return (
     <div className={cx('player-controls-playback-bar', className)} {...restProps}>
+      <span className={cx('player-controls-playback-bar__progress-time')}>{currentTime}</span>
       <ProgressBar {...progressBarProps} />
+      <span className={cx('player-controls-playback-bar__progress-time')}>{duration}</span>
     </div>
   )
 }

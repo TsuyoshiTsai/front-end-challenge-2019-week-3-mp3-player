@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames/bind'
 import { fromEvent } from 'rxjs'
-import { tap, concatMap, takeUntil } from 'rxjs/operators'
+import { tap, switchMap, takeUntil } from 'rxjs/operators'
 
 // Components
 import Background from './components/Background'
@@ -75,7 +75,7 @@ function ProgressBar (props) {
             onSliderChangeStart(event)
           }
         }),
-        concatMap(event => bodyMouseMove$.pipe(takeUntil(bodyMouseUp$)))
+        switchMap(event => bodyMouseMove$.pipe(takeUntil(bodyMouseUp$)))
       )
       .subscribe(event => handleSliderChange(event))
   }, [onSliderChange, onSliderChangeEnd, onSliderChangeStart])

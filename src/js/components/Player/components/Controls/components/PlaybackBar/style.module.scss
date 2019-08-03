@@ -3,4 +3,12 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
+
+  &__progress-time {
+    min-width: 50px;
+    line-height: 1;
+    text-align: center;
+    color: $gray-dark;
+    font-size: $font-size-xs;
+  }
 }

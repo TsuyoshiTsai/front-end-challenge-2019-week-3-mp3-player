@@ -25,10 +25,10 @@ function Meta (props) {
 
   return (
     <div className={cx('list-item-meta', className)} {...restProps}>
-      <Typography.Title level='h5' lineHeight={1} marginBottom={6} shouldEllipsis {...titleProps}>
+      <Typography.Title level='h5' lineHeight={1.25} marginBottom={4} shouldEllipsis {...titleProps}>
         {title}
       </Typography.Title>
-      <Typography.Text color='gray-dark' size='xs' lineHeight={1} shouldEllipsis {...descriptionProps}>
+      <Typography.Text color='gray-dark' size='xs' lineHeight={1.375} shouldEllipsis {...descriptionProps}>
         {description}
       </Typography.Text>
     </div>
