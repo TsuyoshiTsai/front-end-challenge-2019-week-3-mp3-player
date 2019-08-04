@@ -44,10 +44,10 @@ function ProgressBar (props) {
 
   useEffect(() => {
     const handleSliderChange = event => {
-      setIsActive(true)
+      const newPercentage = Math.min(calculateNewPercentage(progressBarRef.current, event.clientX), 99.9)
 
-      if (typeof onSliderChange === 'function') {
-        onSliderChange(event, calculateNewPercentage(progressBarRef.current, event.clientX))
+      if (typeof onSliderChange === 'function' && newPercentage <= 99.9) {
+        onSliderChange(event, newPercentage)
       }
     }
 
@@ -66,7 +66,7 @@ function ProgressBar (props) {
     const bodyMouseMove$ = fromEvent(document.body, 'mousemove').pipe(throttleTime(50))
 
     // 按下 progress bar 時，移動 slider 的位置
-    progressBarMouseDown$.subscribe(event => handleSliderChange(event))
+    const subscription1 = progressBarMouseDown$.subscribe(event => handleSliderChange(event))
     // 按住 progress bar 時，監聽 body 的滑鼠移動事件，移動 slider 的位置
     progressBarMouseDown$
       .pipe(
@@ -78,6 +78,10 @@ function ProgressBar (props) {
         switchMap(event => bodyMouseMove$.pipe(takeUntil(bodyMouseUp$)))
       )
       .subscribe(event => handleSliderChange(event))
+
+    return () => {
+      subscription1.unsubscribe()
+    }
   }, [onSliderChange, onSliderChangeEnd, onSliderChangeStart])
 
   const context = { isActive, percentage }

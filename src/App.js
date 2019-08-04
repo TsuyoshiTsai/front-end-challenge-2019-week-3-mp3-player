@@ -264,8 +264,6 @@ function App () {
                 duration={formatTime(currentAudio.duration)}
               />
             </Player.Controls>
-
-            <Player.ExtraControls>aa</Player.ExtraControls>
           </Player>
         </Layout.Footer>
       </Layout>
